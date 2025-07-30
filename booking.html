@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حجز موعد - عيادة الدكتورة هبة صلاح</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f1f8f9;
+      font-family: 'Cairo', sans-serif;
+    }
+    .booking-form {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .booking-form h2 {
+      text-align: center;
+      color: #00695c;
+      margin-bottom: 30px;
+    }
+    .form-label {
+      font-weight: bold;
+    }
+    .btn-submit {
+      background-color: #00796b;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+    }
+    .price-note {
+      text-align: center;
+      margin-top: 15px;
+      color: #444;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="booking-form">
+    <h2>عيادة الدكتورة هبة صلاح</h2>
+    <h4 class="text-center text-muted mb-4">حجز موعد</h4>
+    <form>
+      <div class="mb-3">
+        <label for="name" class="form-label">اسم الطفل</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="mb-3">
+        <label for="phone" class="form-label">رقم الهاتف</label>
+        <input type="tel" class="form-control" id="phone" required>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">تاريخ الحجز</label>
+        <input type="date" class="form-control" id="date" required>
+      </div>
+      <div class="mb-3">
+        <label for="time" class="form-label">الوقت</label>
+        <input type="time" class="form-control" id="time" required>
+      </div>
+
+      <div class="price-note">💰 قيمة الكشف: 150 جنيه</div>
+<p class="text-muted" style="margin-top: 10px;">⏰ يتم فتح الموقع للحجز من الساعة 12 ظهرًا إلى الساعة 6 مساءً</p>
+
+
+
+      <div class="text-center mt-3">
+        <button type="submit" class="btn btn-submit">تأكيد الحجز</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.querySelector("form");
+
+   form.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
+
+     fetch("https://67b4d18d-c885-4732-8271-c497b95d8f2e-00-1fgjscsnfc8vh.spock.replit.dev/submit-booking", {
+
+
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, phone, date, time })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // ✅ رسالة التأكيد
+      const msg = `📢 *تأكيد الحجز لدى عيادة د. هبة صلاح*
+👶 الاسم: ${name}
+📅 التاريخ: ${date}
+⏰ الوقت: ${time}
+💰 قيمة الكشف: 150 جنيه
+📍 العنوان: مجمع العروبة الطبي - أمام مسجد خالد بن الوليد
+📞 رقم التواصل: ${phone}
+
+✅ شكرًا لاختياركم عيادتنا 💚`;
+
+      // 🟢 فتح واتساب من رقم العيادة لرقم المريض
+      const whatsappLink = `https://wa.me/201142177576?text=${encodeURIComponent(msg)}`;
+      window.open(whatsappLink, '_blank');
+
+      alert("✅ تم تأكيد الحجز بنجاح");
+      form.reset();
+    } else {
+      alert(data.message || "❌ فشل في الحجز");
+    }
+  })
+  .catch(error => {
+    alert("حدث خطأ أثناء إرسال البيانات ❌");
+    console.error(error);
+  });
+});
+
+  </script>
+</body>
+</html>
